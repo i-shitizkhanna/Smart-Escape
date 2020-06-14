@@ -1,9 +1,9 @@
-var size = 50;
+var size = 5;
 var rows = size;
 var cols = size;
 var start = undefined;
 var end = undefined;
-var grid = new Array(cols);
+var grid = new Array(rows);
 var openSet = [];
 var closedSet = [];
 
@@ -14,20 +14,80 @@ function Dot(i, j) {
   this.g = 0;
   this.h = 0;
   this.obstacle = false;
-
+  this.cop = false;
+  this.neighbors = [];
   if (random(1) < 0.3) {
     this.obstacle = true;
   }
-  this.show = function (color) {
+  if (random(1) < 0.008) {
+    this.cop = true;
+  }
+
+  this.addNeighbors = function (grid) {
+    var i = this.x;
+    var j = this.y;
+    if (i > 0 && j > 0) {
+      if (!grid[i - 1][j - 1].obstacle) {
+        this.neighbors.push(grid[i - 1][j - 1]);
+      }
+    }
+    if (i > 0) {
+      if (!grid[i - 1][j].obstacle) {
+        this.neighbors.push(grid[i - 1][j]);
+      }
+    }
+    if (i > 0 && j < cols - 1) {
+      if (!grid[i - 1][j + 1].obstacle) {
+        this.neighbors.push(grid[i - 1][j + 1]);
+      }
+    }
+    if (j < cols - 1) {
+      if (!grid[i][j + 1].obstacle) {
+        this.neighbors.push(grid[i][j + 1]);
+      }
+    }
+    if (i < rows - 1 && j < cols - 1) {
+      if (!grid[i + 1][j + 1].obstacle) {
+        this.neighbors.push(grid[i + 1][j + 1]);
+      }
+    }
+    if (i < rows - 1) {
+      if (!grid[i + 1][j].obstacle) {
+        this.neighbors.push(grid[i + 1][j]);
+      }
+    }
+    if (i < rows - 1 && j > 0) {
+      if (!grid[i + 1][j - 1].obstacle) {
+        this.neighbors.push(grid[i + 1][j - 1]);
+      }
+    }
+    if (j > 0) {
+      if (!grid[i][j - 1].obstacle) {
+        this.neighbors.push(grid[i][j - 1]);
+      }
+    }
+  };
+  this.show = function (clr) {
     if (this.obstacle) {
       return;
     }
-    fill(color);
+    if (this.cop) {
+      fill(color(140, 150, 225));
+
+      noStroke();
+      rect(this.x * w, this.y * h, w, h);
+      return;
+    }
+    fill(clr);
 
     noStroke();
 
     ellipse(this.x * w + w / 2, this.y * h + h / 2, w / 2, w / 2);
   };
+}
+
+function pathFinder() {
+  // Loop through openSet
 }
 function reset() {}
 
@@ -38,22 +98,29 @@ function setup() {
   w = width / cols;
   h = height / rows;
 
-  for (var i = 0; i < cols; i++) {
-    grid[i] = new Array(rows);
+  for (var i = 0; i < rows; i++) {
+    grid[i] = new Array(cols);
   }
 
-  for (var i = 0; i < cols; i++) {
-    for (var j = 0; j < rows; j++) {
+  for (var i = 0; i < rows; i++) {
+    for (var j = 0; j < cols; j++) {
       grid[i][j] = new Dot(i, j);
+    }
+  }
+  for (var i = 0; i < rows; i++) {
+    for (var j = 0; j < cols; j++) {
+      grid[i][j].addNeighbors(grid);
     }
   }
 
   start = grid[0][0];
-  end = grid[cols - i][rows - 1];
+  end = grid[rows - 1][cols - 1];
+  start.obstacle = false;
+  end.obstacle = false;
 
   openSet.push(start);
-
-  //   console.log(grid);
+  pathFinder();
+  console.log(grid);
   //   console.log("Setup");
 }
 
