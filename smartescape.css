@@ -1,0 +1,14 @@
+#defaultCanvas0 {
+  margin-left: 2%;
+  border: 1px solid blue;
+}
+body {
+  background-color: black;
+}
+
+h1 {
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+  color: yellow;
+  animation: blinkingText 5s infinite;
+}
