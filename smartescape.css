@@ -1,5 +1,6 @@
 #defaultCanvas0 {
-  margin-left: 2%;
+  margin-top: 1%;
+  margin-left: 4%;
   border: 1px solid blue;
 }
 body {
@@ -11,4 +12,23 @@ h1 {
   text-align: center;
   color: yellow;
   animation: blinkingText 5s infinite;
+}
+#buttons {
+  margin-left: 50%;
+}
+#restartButton {
+  font-family: "Press Start 2P", cursive;
+  background-color: #990000;
+  border: none;
+  color: yellow;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 10px;
+  margin-right: 50px;
+}
+#restartButton:hover {
+  background-color: red;
 }

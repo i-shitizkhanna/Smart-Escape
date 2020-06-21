@@ -9,7 +9,7 @@ function Cell(i, j) {
   this.neighbors = [];
   this.parent = undefined;
 
-  if (random(1) < 0.05) {
+  if (random(1) < 0.5) {
     this.obstacle = true;
   }
   //   if (random(1) < 0.008) {

@@ -1,4 +1,4 @@
-var size = 75;
+var size = 70;
 var rows = size;
 var cols = size;
 var start = undefined;
@@ -12,7 +12,23 @@ var done = false;
 function heuristic(a, b) {
   return dist(a.x, a.y, b.x, b.y);
 }
-function reset() {}
+function reset() {
+  size = 70;
+  rows = size;
+  cols = size;
+  start = undefined;
+  end = undefined;
+  grid = new Array(rows);
+  openSet = new Set([]);
+  closedSet = new Set([]);
+  path = [];
+  done = false;
+}
+
+function resetButton() {
+  reset();
+  setup();
+}
 
 function setup() {
   createCanvas(850, 600);
@@ -43,7 +59,7 @@ function setup() {
   openSet.add(start);
   // pathFinder();
 
-  console.log(grid);
+  // console.log(grid);
   //   console.log("Setup");
 }
 
@@ -66,7 +82,7 @@ function draw() {
     if (current === end) {
       done = true;
       console.log("DONE!");
-      return;
+      noLoop();
     }
     openSet.delete(current);
     closedSet.add(current);
@@ -81,20 +97,20 @@ function draw() {
       if (openSet.has(val)) {
         if (tempg < val.g) {
           val.g = tempg;
+          val.h = heuristic(val, end);
+          val.f = val.h + val.g;
+          val.parent = current;
         }
       } else {
         val.g = tempg;
         openSet.add(val);
+        val.h = heuristic(val, end);
+        val.f = val.h + val.g;
+        val.parent = current;
       }
-
-      val.h = heuristic(val, end);
-      val.f = val.h + val.g;
-      val.parent = current;
     }
   }
-  if (!done) {
-    console.log("No Solution");
-  } else {
+  if (done) {
     var temp = end;
     while (temp != undefined) {
       path.push(temp);
@@ -116,15 +132,13 @@ function draw() {
   for (val of path) {
     val.show(color(0, 0, 255));
   }
-  if (path.length == 0) {
-    console.log("EMPTY!");
-  }
+
   noFill();
   stroke(color(0, 120, 120));
   beginShape();
   strokeWeight(w / 3);
-  for (var i = 0; i < path.length; ++i) {
-    vertex(path[i].i * w + w / 2, path[i].j * h + h / 2);
+  for (var i = 0; i < path.length; i++) {
+    vertex(path[i].x * w + w / 2, path[i].y * h + h / 2);
   }
   endShape();
 }
