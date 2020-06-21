@@ -9,7 +9,7 @@ function Cell(i, j) {
   this.neighbors = [];
   this.parent = undefined;
 
-  if (random(1) < 0.5) {
+  if (random(1) < 0.3) {
     this.obstacle = true;
   }
   //   if (random(1) < 0.008) {
@@ -62,9 +62,6 @@ function Cell(i, j) {
   };
 
   this.show = function (clr) {
-    if (this.obstacle) {
-      return;
-    }
     if (this.cop) {
       fill(color(140, 150, 225));
 

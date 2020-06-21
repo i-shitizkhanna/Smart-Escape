@@ -8,10 +8,12 @@ var openSet = new Set([]);
 var closedSet = new Set([]);
 var path = [];
 var done = false;
+var begin = false;
 
 function heuristic(a, b) {
   return dist(a.x, a.y, b.x, b.y);
 }
+
 function reset() {
   size = 70;
   rows = size;
@@ -23,11 +25,25 @@ function reset() {
   closedSet = new Set([]);
   path = [];
   done = false;
+  begin = false;
 }
 
 function resetButton() {
   reset();
   setup();
+}
+
+function beginButton() {
+  begin = true;
+}
+
+function createPath(cell) {
+  var temp = cell;
+  path = [];
+  while (temp != undefined) {
+    path.push(temp);
+    temp = temp.parent;
+  }
 }
 
 function setup() {
@@ -58,16 +74,15 @@ function setup() {
 
   openSet.add(start);
   // pathFinder();
-
   // console.log(grid);
-  //   console.log("Setup");
+  // console.log("Setup");
 }
 
 function draw() {
   background(color(255, 255, 0));
   //   console.log("Draw");
 
-  if (openSet.size != 0 && !done) {
+  if (openSet.size != 0 && !done && begin) {
     var current = undefined;
     for (val of openSet) {
       if (current === undefined) {
@@ -78,14 +93,13 @@ function draw() {
         }
       }
     }
-
     if (current === end) {
       done = true;
       console.log("DONE!");
-      noLoop();
     }
     openSet.delete(current);
     closedSet.add(current);
+    createPath(current);
     var neighbors = current.neighbors;
 
     for (val of neighbors) {
@@ -111,30 +125,26 @@ function draw() {
     }
   }
   if (done) {
-    var temp = end;
-    while (temp != undefined) {
-      path.push(temp);
-      temp = temp.parent;
-    }
+    createPath(end);
   }
   for (var i = 0; i < cols; i++) {
     for (var j = 0; j < rows; j++) {
-      grid[i][j].show(color(0, 0, 0));
+      if (grid[i][j].obstacle) {
+        grid[i][j].show(color(0, 0, 0));
+      }
     }
   }
   for (val of openSet) {
     val.show(color(0, 175, 0));
   }
-
   for (val of closedSet) {
     val.show(color(180, 0, 0));
   }
   for (val of path) {
     val.show(color(0, 0, 255));
   }
-
   noFill();
-  stroke(color(0, 120, 120));
+  stroke(color(0, 100, 100));
   beginShape();
   strokeWeight(w / 3);
   for (var i = 0; i < path.length; i++) {
